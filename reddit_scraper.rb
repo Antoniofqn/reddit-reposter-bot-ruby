@@ -9,30 +9,46 @@ class RedditScrapper
     @subreddit = 'AITAH'
   end
 
-  def collect_posts
-    clean_tmp_dir
-    result = RedditGet::Subreddit.collect(@subreddit)
-    result[@subreddit].delete_at(0)
-    result[@subreddit].each do |post|
-      text = post['selftext'].to_s.strip
-      chunks = chunk_preserving_paragraphs(text, MAX_CHARS_PER_IMAGE)
-      if chunks.size > MAX_IMAGES
-        puts "Post is too long (needs #{chunks.size} images). Skipping..."
-        next
-      end
-
-      chunks.each_with_index do |chunk, idx|
-        title = chunks.size > 1 ? "#{post['title']} (Part #{idx + 1})" : post['title']
-        HtmlToImageService.new(
-          post_title: title,
-          post_text: chunk
-        ).generate_image
-      end
+  def prepare_posts
+    results = collect_posts
+    results.each do |post|
+      chunks = generate_chunks(post)
+      next if chunks.empty?
+      images = generate_image_from_chunks(post, chunks)
       break
     end
   end
 
+  # Can be called on its own in case image creation is not needed
+  def collect_posts
+    clean_tmp_dir
+    result = RedditGet::Subreddit.collect(@subreddit)
+    result[@subreddit].delete_at(0) # delete pinned post. Add more if needed
+    result[@subreddit]
+  end
+
   private
+
+  def generate_chunks(post)
+    binding.pry
+    text = post['selftext'].to_s.strip
+    chunks = chunk_preserving_paragraphs(text, MAX_CHARS_PER_IMAGE)
+    if chunks.size > MAX_IMAGES
+      puts "Post is too long (needs #{chunks.size} images). Skipping..."
+      return []
+    end
+    chunks
+  end
+
+  def generate_image_from_chunks(post, chunks)
+    chunks.each_with_index do |chunk, idx|
+      title = chunks.size > 1 ? "#{post['title']} (Part #{idx + 1})" : post['title']
+      HtmlToImageService.new(
+        post_title: title,
+        post_text: chunk
+      ).generate_image
+    end
+  end
 
   def chunk_preserving_paragraphs(full_text, max_chars)
     return [] if full_text.empty?
