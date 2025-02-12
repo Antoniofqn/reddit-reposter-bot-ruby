@@ -41,8 +41,6 @@ class TwitterPosterService
       media: { media_ids: }
     }
 
-    binding.pry
-
     client.post('tweets', tweet_body.to_json)
   end
 

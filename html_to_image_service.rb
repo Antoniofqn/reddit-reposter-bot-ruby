@@ -9,22 +9,17 @@ class HtmlToImageService
   end
 
   def generate_image
-    # 1. Build the HTML from a template or inline
     html = render_template
-
-    # 2. Use Grover to render PDF or image
     grover = Grover.new(html, **{
-                          full_page: true, # capture the entire rendered content
+                          full_page: true,
                           viewport: {
-                            width: 600, # make it narrower if you want, e.g. 600 px
-                            height: 1 # minimal height so Puppeteer expands as needed
+                            width: 600,
+                            height: 1
                           },
                           scale: 1
-                          # omit :format so it doesn't force A4 or letter
                         })
     screenshot = grover.to_png
 
-    # 3. Save the screenshot to a file
     file_path = File.join(Dir.pwd, 'tmp', "post-#{Time.now.to_i}.png")
     File.binwrite(file_path, screenshot)
     file_path
@@ -48,11 +43,10 @@ class HtmlToImageService
             }
 
             .post-container {
-              /* If you want a border or padding, do it here */
               border: 1px solid #ddd;
               padding: 20px;
-              max-width: 600px;       /* so lines don't stretch too wide */
-              margin: 0 auto;         /* center horizontally */
+              max-width: 600px;
+              margin: 0 auto;
               box-sizing: border-box;
             }
             .title {
