@@ -9,8 +9,8 @@ class TwitterPosterService
   def initialize
     @api_key = ENV['TWITTER_API_KEY']
     @api_key_secret = ENV['TWITTER_API_SECRET']
-    @access_token = ENV['TWITTER_AITAH_ACCESS_TOKEN']
-    @access_token_secret = ENV['TWITTER_AITAH_ACCESS_TOKEN_SECRET']
+    @access_token = ENV['TWITTER_USER_ACCESS_TOKEN']
+    @access_token_secret = ENV['TWITTER_USER_ACCESS_TOKEN_SECRET']
   end
 
   def login
