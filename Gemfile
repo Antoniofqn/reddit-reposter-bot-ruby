@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+gem 'dotenv-rails'
+gem 'fileutils'
+gem 'grover'
+gem 'oauth'
+gem 'reddit_get'
+gem 'redis'
+gem 'sidekiq'
+gem 'x', '~> 0.15.0'
+gem 'pry'
