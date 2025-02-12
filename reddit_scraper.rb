@@ -30,7 +30,6 @@ class RedditScrapper
   private
 
   def generate_chunks(post)
-    binding.pry
     text = post['selftext'].to_s.strip
     chunks = chunk_preserving_paragraphs(text, MAX_CHARS_PER_IMAGE)
     if chunks.size > MAX_IMAGES
